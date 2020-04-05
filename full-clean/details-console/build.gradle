@@ -1,0 +1,17 @@
+plugins {
+    id 'application'
+}
+
+application {
+    mainClassName = 'com.macdao.ecommerce.order.details.console.Main'
+}
+
+run {
+    standardInput = System.in
+}
+
+dependencies {
+    implementation project(':app')
+    implementation project(':details-memdb')
+    implementation project(':infrastructure')
+}

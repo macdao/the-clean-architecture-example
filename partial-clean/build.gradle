@@ -1,0 +1,14 @@
+subprojects {
+    apply plugin: 'java'
+    group = 'com.macdao'
+    version = '1.0'
+    repositories {
+        mavenCentral()
+    }
+    sourceCompatibility = JavaVersion.VERSION_11
+    dependencies {
+        testImplementation 'junit:junit:4.12'
+    }
+}
+
+
