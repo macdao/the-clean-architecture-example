@@ -10,8 +10,6 @@ import org.springframework.boot.*;
 import org.springframework.boot.autoconfigure.*;
 import org.springframework.context.annotation.*;
 
-import static org.springframework.web.context.WebApplicationContext.*;
-
 @SpringBootApplication
 public class OrderApplication {
     public static void main(String[] args) {
@@ -39,38 +37,22 @@ public class OrderApplication {
     }
 
     @Bean
-    @Scope(SCOPE_REQUEST)
-    public CreateOrderPresenter createorderPresenter() {
-        return new CreateOrderPresenter();
+    public CreateOrderInteractor createOrderInputBoundary(OrderGateway orderGateway, TransactionManager transactionManager, OrderFactory orderFactory) {
+        return new CreateOrderInteractor(orderGateway, transactionManager, orderFactory);
     }
 
     @Bean
-    @Scope(SCOPE_REQUEST)
-    public CreateOrderInputBoundary createOrderInputBoundary(OrderGateway orderGateway, TransactionManager transactionManager, OrderFactory orderFactory, CreateOrderOutputBoundary createOrderOutputBoundary) {
-        return new CreateOrderInteractor(orderGateway, transactionManager, orderFactory, createOrderOutputBoundary);
-    }
-
-    @Bean
-    @Scope(SCOPE_REQUEST)
-    public CreateOrderController createOrderController(CreateOrderInputBoundary createOrderInputBoundary) {
+    public CreateOrderController createOrderController(CreateOrderInteractor createOrderInputBoundary) {
         return new CreateOrderController(createOrderInputBoundary);
     }
 
     @Bean
-    @Scope(SCOPE_REQUEST)
-    public ChangeAddressDetailPresenter changeAddressDetailPresenter() {
-        return new ChangeAddressDetailPresenter();
+    public ChangeAddressDetailInteractor changeAddressDetailInputBoundary(OrderGateway orderGateway, TransactionManager transactionManager) {
+        return new ChangeAddressDetailInteractor(orderGateway, transactionManager);
     }
 
     @Bean
-    @Scope(SCOPE_REQUEST)
-    public ChangeAddressDetailInputBoundary changeAddressDetailInputBoundary(OrderGateway orderGateway, TransactionManager transactionManager, ChangeAddressDetailOutputBoundary changeAddressDetailOutputBoundary) {
-        return new ChangeAddressDetailInteractor(orderGateway, transactionManager, changeAddressDetailOutputBoundary);
-    }
-
-    @Bean
-    @Scope(SCOPE_REQUEST)
-    public ChangeAddressDetailController changeAddressDetailController(ChangeAddressDetailInputBoundary changeAddressDetailInputBoundary) {
+    public ChangeAddressDetailController changeAddressDetailController(ChangeAddressDetailInteractor changeAddressDetailInputBoundary) {
         return new ChangeAddressDetailController(changeAddressDetailInputBoundary);
     }
 }

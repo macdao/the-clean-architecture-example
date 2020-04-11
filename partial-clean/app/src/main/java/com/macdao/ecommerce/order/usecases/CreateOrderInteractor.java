@@ -4,21 +4,18 @@ import com.macdao.ecommerce.infrastructure.app.*;
 
 import java.util.stream.*;
 
-public class CreateOrderInteractor implements CreateOrderInputBoundary {
+public class CreateOrderInteractor {
     private final OrderGateway orderGateway;
     private final TransactionManager transactionManager;
     private final OrderFactory orderFactory;
-    private final CreateOrderOutputBoundary outputBoundary;
 
-    public CreateOrderInteractor(OrderGateway orderGateway, TransactionManager transactionManager, OrderFactory orderFactory, CreateOrderOutputBoundary outputBoundary) {
+    public CreateOrderInteractor(OrderGateway orderGateway, TransactionManager transactionManager, OrderFactory orderFactory) {
         this.orderGateway = orderGateway;
         this.transactionManager = transactionManager;
         this.orderFactory = orderFactory;
-        this.outputBoundary = outputBoundary;
     }
 
-    @Override
-    public void execute(CreateOrderInputData inputData) {
+    public CreateOrderOutputData execute(CreateOrderInputData inputData) {
         var order = orderFactory.create(inputData.getItems(), inputData.getAddressProvince(), inputData.getAddressCity(), inputData.getAddressDetail());
         transactionManager.startTransaction();
         try {
@@ -29,11 +26,11 @@ public class CreateOrderInteractor implements CreateOrderInputBoundary {
                     .map(orderItem -> new OrderItemData(orderItem.getProductId().toString(), orderItem.getCount(), orderItem.getItemPrice()))
                     .collect(Collectors.toList());
             var address = order.getAddress();
-            var createOrderOutputData = new CreateOrderOutputData(order.getId().toString(), orderItemDataList, address.getProvince(), address.getCity(), address.getDetail());
 
-            outputBoundary.succeedWith(createOrderOutputData);
+            return new CreateOrderOutputData(order.getId().toString(), orderItemDataList, address.getProvince(), address.getCity(), address.getDetail());
         } catch (Exception e) {
-            outputBoundary.failWith(e);
+            transactionManager.rollback();
+            throw e;
         }
     }
 }

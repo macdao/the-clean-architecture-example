@@ -3,9 +3,9 @@ package com.macdao.ecommerce.order.interfaceadapters.web;
 import com.macdao.ecommerce.order.usecases.*;
 
 public class ChangeAddressDetailController {
-    private final ChangeAddressDetailInputBoundary changeAddressDetail;
+    private final ChangeAddressDetailInteractor changeAddressDetail;
 
-    public ChangeAddressDetailController(ChangeAddressDetailInputBoundary changeAddressDetail) {
+    public ChangeAddressDetailController(ChangeAddressDetailInteractor changeAddressDetail) {
         this.changeAddressDetail = changeAddressDetail;
     }
 

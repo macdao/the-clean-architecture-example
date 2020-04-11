@@ -12,9 +12,7 @@ import java.util.*;
 import static java.lang.String.*;
 
 public class Main {
-    private final CreateOrderPresenter createOrderPresenter;
     private final CreateOrderController createOrderController;
-    private final ChangeAddressDetailPresenter changeAddressDetailPresenter;
     private final ChangeAddressDetailController changeAddressDetailController;
 
     public static void main(String[] args) {
@@ -26,14 +24,11 @@ public class Main {
         TransactionManager transactionManager = new DummyTransactionManager();
         OrderGateway orderGateway = new InMemOrderGateway();
 
-        createOrderPresenter = new CreateOrderPresenter();
-        var createOrder = new CreateOrderInteractor(orderGateway, transactionManager, new OrderFactory(new UuidOrderIdGenerator()), createOrderPresenter);
+        var createOrder = new CreateOrderInteractor(orderGateway, transactionManager, new OrderFactory(new UuidOrderIdGenerator()));
         createOrderController = new CreateOrderController(createOrder);
 
-        changeAddressDetailPresenter = new ChangeAddressDetailPresenter();
-        var changeAddressDetail = new ChangeAddressDetailInteractor(orderGateway, transactionManager, changeAddressDetailPresenter);
+        var changeAddressDetail = new ChangeAddressDetailInteractor(orderGateway, transactionManager);
         changeAddressDetailController = new ChangeAddressDetailController(changeAddressDetail);
-
     }
 
     private void start() {
@@ -62,9 +57,7 @@ public class Main {
     }
 
     private void createOrder(String input) {
-        createOrderController.execute(input);
-
-        var viewModel = createOrderPresenter.toViewModel();
+        var viewModel = createOrderController.execute(input);
 
         if (viewModel.isSuccessful()) {
             System.out.println(format("Order created: orderId: %s, items: %s, address: %s", viewModel.getOrderId(), viewModel.getItems(), viewModel.getAddress()));
@@ -72,9 +65,8 @@ public class Main {
     }
 
     private void changeAddressDetail(String input) {
-        changeAddressDetailController.execute(input);
+        var viewModel = changeAddressDetailController.execute(input);
 
-        var viewModel = changeAddressDetailPresenter.toViewModel();
         System.out.println("succeed: " + viewModel.isSuccessful());
         if (viewModel.isSuccessful()) {
             System.out.println(format("orderId: %s, detail: %s", viewModel.getOrderId(), viewModel.getDetail()));
