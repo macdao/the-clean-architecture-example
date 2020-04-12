@@ -9,8 +9,4 @@ there is no unit test because this project focuses on the architecture.
 
 this is a clean architecture edition of https://github.com/e-commerce-sample/ecommerce-order-service
 
-```sh
-./gradlew :details-console:run --console=plain -q
-```
-
 explain structure
